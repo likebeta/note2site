@@ -6,6 +6,15 @@
 </head>
 <body>
 <?php
+	function write_file($name,$content){
+		$file = fopen('/tmp/www/'.$name.'.html','w+');
+			if ($file){
+			fwrite($file,"<!doctype>\n<html>\n<head><title>$name</title><meta charset=\"utf8\" /></head>\n<body>\n".$content."</body>\n</html>");
+			fclose($file);
+		}
+	}	
+?>
+<?php
 require('ynote_client.php');
 require('ynote_parse.php');
 	$oauth_consumer_key = "780b8bb560897a357c78de3e85b88cd9";
@@ -29,6 +38,7 @@ foreach ($notebooks as $notebook){
 		$get_note_response = $client->getNote($oauth_access_token, $oauth_access_secret, $notePath);
 		$note = parseNote($get_note_response);
 		echo $note->title.'<br />';
+		write_file($note->title,$note->content);
 	}
 	echo '<br />';
 }
