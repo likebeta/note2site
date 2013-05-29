@@ -12,7 +12,7 @@
 			fwrite($file,"<!doctype>\n<html>\n<head><title>$name</title><meta charset=\"utf8\" /></head>\n<body>\n".$content."</body>\n</html>");
 			fclose($file);
 		}
-	}	
+	}
 ?>
 <?php
 require('ynote_client.php');
@@ -50,17 +50,19 @@ foreach ($notebooks as $notebook){
 		$note = parseNote($get_note_response);
 		echo $note->title.':'.$note->path.'<br />';
 		preg_match_all('<img.*?\s+src=\"(.+?)\".*?(data-media-type=\"image\")?>',$note->content,$out);
+		$imgurls = $out[1];
 		$imgs = array();
 		foreach($out[1] as $img){
 			$imgurl = $client->getAuthorizedDownloadLink($oauth_access_token, $oauth_access_secret, $img);
 			$imgs[] = $imgurl;
 		}
-		preg_match_all('<img.*?\s+src=\"(.+?)\".+?\s+path=\"(.+?)\".*?(data-media-type=\"attachment\").*?>',$note->content,$out);
-		var_dump($out);
+		$my = new preg_class($imgurls,$imgs);
+		$note->content = preg_replace_callback('<img.*?\s+src=\"(.+?)\".*?(data-media-type=\"image\")?>',array(&$my,'preg_callback'),$note->content);
+	/*	preg_match_all('<img.*?\s+src=\"(.+?)\".+?\s+path=\"(.+?)\".*?(data-media-type=\"attachment\").*?>',$note->content,$out);
+		var_dump($out);*/
 		echo '<br />';
 		write_file($note->title,$note->content);
 	}
-	echo '<br />';
 
 /*
 	// listNotebooks
@@ -83,6 +85,24 @@ foreach ($notebooks as $notebook){
     $download_attachment_response = $client->getAuthorizedDownloadLink($oauth_access_token, $oauth_access_secret, "http://note.youdao.com/yws/open/resource/download/739/7CCE9F2C0E734CC4A7F3EC96EA8BE440");
     echo '<a href="'.$download_attachment_response.'">Download</a>';
 */
+
+class preg_class{
+	private $imgurls;
+	private $imgs;
+	function __construct($imgurls,$imgs){
+		$this->imgurls = $imgurls;
+		$this->imgs = $imgs;
+	}
+
+	function preg_callback($matchs){
+		for($i = 0; $i < count($this->imgurls); ++$i){
+			if ($matchs[1] === $this->imgurls[$i]){
+				return $this->imgs[$i];
+			}
+		}
+		return $matchs[1];
+	}
+}
 ?>
 </body>
 </html>
