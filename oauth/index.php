@@ -49,18 +49,31 @@ foreach ($notebooks as $notebook){
 		$get_note_response = $client->getNote($oauth_access_token, $oauth_access_secret, $notePath);
 		$note = parseNote($get_note_response);
 		echo $note->title.':'.$note->path.'<br />';
-		preg_match_all('<img.*?\s+src=\"(.+?)\".*?(data-media-type=\"image\")?>',$note->content,$out);
+		preg_match_all('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',$note->content,$out);
 		$imgurls = $out[1];
 		$imgs = array();
 		foreach($out[1] as $img){
 			$imgurl = $client->getAuthorizedDownloadLink($oauth_access_token, $oauth_access_secret, $img);
 			$imgs[] = $imgurl;
 		}
-		$my = new preg_class($imgurls,$imgs);
-		$note->content = preg_replace_callback('<img.*?\s+src=\"(.+?)\".*?(data-media-type=\"image\")?>',array(&$my,'preg_callback'),$note->content);
-	/*	preg_match_all('<img.*?\s+src=\"(.+?)\".+?\s+path=\"(.+?)\".*?(data-media-type=\"attachment\").*?>',$note->content,$out);
-		var_dump($out);*/
-		echo '<br />';
+		$img_obj = new preg_image_class($imgurls,$imgs);
+		$note->content = preg_replace_callback('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',array(&$img_obj,'preg_callback'),$note->content);
+		if(preg_match_all('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',$note->content,$out)){
+		$imgurls = $out[1];
+		$titles = $out[2];
+		$attachmenturls = $out[3];
+		$imgs = array();
+		$attachments = array();
+		for($i = 0; $i < count($imgurls);$i++){
+			$imgurl = $client->getAuthorizedDownloadLink($oauth_access_token, $oauth_access_secret, $imgurls[$i]);
+			$attachment = $client->getAuthorizedDownloadLink($oauth_access_token, $oauth_access_secret, $attachmenturls[$i]);
+			$imgs[] = $imgurl;
+			$attachments[] = $attachment; 
+		}
+		$attachment_obj = new preg_attachment_class($imgurls,$imgs,$titles,$attachmenturls,$attachments);
+		$note->content = preg_replace_callback('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',array(&$attachment_obj,'preg_callback'),$note->content);
+	
+	}
 		write_file($note->title,$note->content);
 	}
 
@@ -86,7 +99,7 @@ foreach ($notebooks as $notebook){
     echo '<a href="'.$download_attachment_response.'">Download</a>';
 */
 
-class preg_class{
+class preg_image_class{
 	private $imgurls;
 	private $imgs;
 	function __construct($imgurls,$imgs){
@@ -97,10 +110,31 @@ class preg_class{
 	function preg_callback($matchs){
 		for($i = 0; $i < count($this->imgurls); ++$i){
 			if ($matchs[1] === $this->imgurls[$i]){
-				return $this->imgs[$i];
+				return str_replace($matchs[1],$this->imgs[$i],$matchs[0]);
 			}
 		}
-		return $matchs[1];
+	}
+}
+class preg_attachment_class{
+    private $imgurls;
+    private $imgs;
+	private $titles;
+	private $attachmenturls;
+	private $attachments;
+    function __construct($imgurls,$imgs,$titles,$attachmenturls,$attachments){
+       $this->imgurls = $imgurls;
+       $this->imgs = $imgs;
+	   $this->titles = $titles;
+	   $this->attachmenturls = $attachmenturls;
+	   $this->attachments = $attachments;
+	 }
+
+	 function preg_callback($matchs){
+		for($i = 0; $i < count($this->imgurls); ++$i){
+			if ($matchs[1] === $this->imgurls[$i]){
+				return '<a href="'.$this->attachments[$i].'" title="'.$this->titles[$i].'"><img src="'.$this->imgs[$i].'" /></a>';
+			}
+		}
 	}
 }
 ?>
