@@ -1,32 +1,29 @@
+<?php
+$path = isset($_GET['path']) ? $_GET['path']:'';
+if ($path === '')
+{
+	include('404.php');
+	exit;
+}
+?>
 <!doctype html>
 <html>
 <head>
-<title>note2site</title>
+<title>archive | <?php echo $path;?></title>
 <meta charset="utf8" />
 </head>
 <body>
 <?php
-	function write_file($name,$content){
-		$file = fopen('/tmp/www/'.$name.'.html','w+');
-			if ($file){
-			fwrite($file,"<!doctype>\n<html>\n<head><title>$name</title><meta charset=\"utf8\" /></head>\n<body>\n".$content."</body>\n</html>");
-			fclose($file);
-		}
-	}
-?>
-<?php
-require('../config.php');
-require('ynote_client.php');
-require('ynote_parse.php');
+require_once('../config.php');
+require('../oauth/ynote_client.php');
+require('../oauth/ynote_parse.php');
 
-	$client = new YnoteClient($oauth_consumer_key, $oauth_consumer_secret);
+$client = new YnoteClient($oauth_consumer_key, $oauth_consumer_secret);
+$response = $client->getNote($oauth_access_token,$oauth_access_secret,$path);
 
-	$notes = array('/V5_B_BU/0175E4E030CF431CAAD60AC703B4B146','/8E00330A442B49688B2ECEFE3E9A7FBA/55E1FFBB77574591B51A17FCAC0CA874');
-	foreach($notes as $notePath){
-		$get_note_response = $client->getNote($oauth_access_token, $oauth_access_secret, $notePath);
-		$note = parseNote($get_note_response);
-		echo $note->title.':'.$note->path.'<br />';
-		preg_match_all('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',$note->content,$out);
+if ($note = parseNote($response)){
+	if (preg_match_all('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',$note->content,$out) && $out[0] !== '')
+	{
 		$imgurls = $out[1];
 		$imgs = array();
 		foreach($out[1] as $img){
@@ -35,7 +32,8 @@ require('ynote_parse.php');
 		}
 		$img_obj = new preg_image_class($imgurls,$imgs);
 		$note->content = preg_replace_callback('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',array(&$img_obj,'preg_callback'),$note->content);
-		if(preg_match_all('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',$note->content,$out)){
+	}
+	if(preg_match_all('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',$note->content,$out) && $out[0] !== ''){
 		$imgurls = $out[1];
 		$titles = $out[2];
 		$attachmenturls = $out[3];
@@ -49,12 +47,15 @@ require('ynote_parse.php');
 		}
 		$attachment_obj = new preg_attachment_class($imgurls,$imgs,$titles,$attachmenturls,$attachments);
 		$note->content = preg_replace_callback('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',array(&$attachment_obj,'preg_callback'),$note->content);
-	
 	}
-		write_file($note->title,$note->content);
-	}
+	echo $note->content;
 
-
+}
+else{
+	echo '网页不存在或者服务器错误';
+}
+?>
+<?php
 class preg_image_class{
 	private $imgurls;
 	private $imgs;
