@@ -2,18 +2,11 @@
 $path = isset($_GET['path']) ? $_GET['path']:'';
 if ($path === '')
 {
-	include('404.php');
+	include('../404.php');
 	exit;
 }
-?>
-<!doctype html>
-<html>
-<head>
-<title>archive | <?php echo $path;?></title>
-<meta charset="utf8" />
-</head>
-<body>
-<?php
+
+// 开始获取note内容
 require_once('../config.php');
 require('../oauth/ynote_client.php');
 require('../oauth/ynote_parse.php');
@@ -33,6 +26,7 @@ if ($note = parseNote($response)){
 		$img_obj = new preg_image_class($imgurls,$imgs);
 		$note->content = preg_replace_callback('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',array(&$img_obj,'preg_callback'),$note->content);
 	}
+
 	if(preg_match_all('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',$note->content,$out) && $out[0] !== ''){
 		$imgurls = $out[1];
 		$titles = $out[2];
@@ -48,13 +42,24 @@ if ($note = parseNote($response)){
 		$attachment_obj = new preg_attachment_class($imgurls,$imgs,$titles,$attachmenturls,$attachments);
 		$note->content = preg_replace_callback('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',array(&$attachment_obj,'preg_callback'),$note->content);
 	}
-	echo $note->content;
-
 }
 else{
-	echo '网页不存在或者服务器错误';
+	die('网页不存在或者服务器错误');
 }
 ?>
+<!doctype html>
+<html>
+<head>
+<title>archive | <?php echo $note->title;?></title>
+<meta charset="utf8" />
+</head>
+<body>
+<?php
+	echo $note->content;
+?>
+</body>
+</html>
+
 <?php
 class preg_image_class{
 	private $imgurls;
@@ -95,5 +100,3 @@ class preg_attachment_class{
 	}
 }
 ?>
-</body>
-</html>
