@@ -26,7 +26,7 @@ if ($notes = parseNotes($response)){
 	foreach($notes as $notepath){
 		$response = $client->getNote($oauth_access_token,$oauth_access_secret,$notepath);
 		if ($note = parseNote($response)){
-			echo '<li><a href="'.$site_url.'/archive/index.php?path='.$note->path.'" title="'.$note->title.'" target="_blank">'.$note->title.'</a></li>';
+			echo '<li><a href="'.$site_url.'/archive'.$note->path.'.html" title="'.$note->title.'" target="_blank">'.$note->title.'</a></li>';
 		}
 	}
 	echo '</ul>';

@@ -15,7 +15,7 @@ $response = $client->listNotebooks($oauth_access_token,$oauth_access_secret);
 if ($notebooks = parseNotebooks($response)){
 	echo '<ul>';
 	foreach($notebooks as $notebook){
-		echo '<li><a href="'.$site_url.'/topic/index.php?path='.$notebook->path.'" title="有'.$notebook->notes_num.'篇笔记" target="_blank">'.$notebook->name.'</a></li>';
+		echo '<li><a href="'.$site_url.'/topic'.$notebook->path.'.html" title="有'.$notebook->notes_num.'篇笔记" target="_blank">'.$notebook->name.'</a></li>';
 	}
 	echo '</ul>';
 }
