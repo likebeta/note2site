@@ -16,14 +16,14 @@ $response = $client->listNotes($oauth_access_token,$oauth_access_secret,$path);
 
 $str_notes = '';
 if ($notes = parseNotes($response)){
-	$str_notes += '<ul>';
+	$str_notes .= '<ul>';
 	foreach($notes as $notepath){
 		$response = $client->getNote($oauth_access_token,$oauth_access_secret,$notepath);
 		if ($note = parseNote($response)){
-			$str_notes += '<li><a href="'.$site_url.'/archive'.$note->path.'.html" title="'.$note->title.'" target="_blank">'.$note->title.'</a></li>';
+			$str_notes .= '<li><a href="'.$site_url.'/archive'.$note->path.'.html" title="'.$note->title.'" target="_blank">'.$note->title.'</a></li>';
 		}
 	}
-	$str_notes += '</ul>';
+	$str_notes .= '</ul>';
 }
 else{
 	die('网页不存在或者服务器错误');
