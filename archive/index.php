@@ -50,7 +50,7 @@ else{
 <!doctype html>
 <html>
 <head>
-<title>archive | <?php echo $note->title;?></title>
+<title><?php echo $note->title;?> | note2site</title>
 <meta charset="utf8" />
 </head>
 <body>
