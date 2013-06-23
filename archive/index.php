@@ -15,7 +15,7 @@ $client = new YnoteClient($oauth_consumer_key, $oauth_consumer_secret);
 $response = $client->getNote($oauth_access_token,$oauth_access_secret,$path);
 
 if ($note = parseNote($response)){
-	if (preg_match_all('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',$note->content,$out) && $out[0] !== '')
+	if (preg_match_all('/<img.*?\s+data-media-type=\"image\".*?\ssrc=\"(.+?)\".*?>|<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',$note->content,$out) && $out[0] !== '')
 	{
 		$imgurls = $out[1];
 		$imgs = array();
@@ -24,7 +24,7 @@ if ($note = parseNote($response)){
 			$imgs[] = $imgurl;
 		}
 		$img_obj = new preg_image_class($imgurls,$imgs);
-		$note->content = preg_replace_callback('/<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',array(&$img_obj,'preg_callback'),$note->content);
+		$note->content = preg_replace_callback('/<img.*?\s+data-media-type=\"image\".*?\ssrc=\"(.+?)\".*?>|<img.*?\s+src=\"(.+?)\".*?\sdata-media-type=\"image\".*?>/',array(&$img_obj,'preg_callback'),$note->content);
 	}
 
 	if(preg_match_all('/<img.*?\s+src=\"(.+?)\".+?\s+filename=\"(.+?)\".*?\s+path=\"(.+?)\".*?data-media-type=\"attachment\".*?>/',$note->content,$out) && $out[0] !== ''){
