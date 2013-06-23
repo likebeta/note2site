@@ -65,6 +65,7 @@ if ($results = $mysqli->query($strsql)) {
 </head>
 <body>
 <?php
+	echo "<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$site_url\" title=\"home\">home</a> &gt; $title</div>";
 	echo $str_notes;
 ?>
 </body>

@@ -11,6 +11,24 @@ require_once('../config.php');
 require('../oauth/ynote_client.php');
 require('../oauth/ynote_parse.php');
 
+$mysqli = new mysqli($db_host, $db_username, $db_password, $db_name);
+if ($mysqli->connect_errno) {
+	$msg = "Connect failed: ".$mysqli->connect_error;
+	die($msg);
+}
+
+$notebook_title = '';
+$notebook_path = '';
+$strsql = "SELECT notebook.name,notebook.path FROM notebook WHERE notebook.path=(SELECT note.notebook_path FROM note WHERE note.path='/".$path."')";
+if ($results = $mysqli->query($strsql)) {
+	if ($results->num_rows !== 1) {
+		include('../404.php');
+		exit();
+	}
+	$row = $results->fetch_assoc();
+	$notebook_title = $row['name'];
+	$notebook_path = $row['path'];
+}
 $client = new YnoteClient($oauth_consumer_key, $oauth_consumer_secret);
 $response = $client->getNote($oauth_access_token,$oauth_access_secret,$path);
 
@@ -55,6 +73,7 @@ else{
 </head>
 <body>
 <?php
+	echo "<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$site_url\" title=\"home\">home</a> &gt; <a href=\"$site_url/topic".$notebook_path.".html\" title=\"$notebook_title\">$notebook_title</a> &gt; ".$note->title."</div>";
 	echo $note->content;
 ?>
 </body>
