@@ -1,5 +1,5 @@
 <?php
-$site_url = 'http://www.ibiu.org';
+$site_url = '';
 
 // note相关
 $base_url = 'http://note.youdao.com';
