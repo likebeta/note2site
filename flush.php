@@ -21,8 +21,20 @@ if ($mysqli->connect_errno) {
 	php_die($msg);
 }
 
+$strsql = "DROP TABLE IF EXISTS `notebook`";
+if ($mysqli->query($strsql) === FALSE) {
+    $msg = "drop table notebook failed: ".$mysqli->error;
+   	php_die($msg);
+}
+
+$strsql = "DROP TABLE IF EXISTS `note`";
+if ($mysqli->query($strsql) === FALSE) {
+    $msg = "drop table note failed: ".$mysqli->error;
+   	php_die($msg);
+}
+
 $strsql = <<<EOF
-CREATE TABLE IF NOT EXISTS `notebook` (
+CREATE TABLE `notebook` (
   `path` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `notes_num` varchar(255) NOT NULL,
@@ -34,12 +46,12 @@ CREATE TABLE IF NOT EXISTS `notebook` (
 EOF;
 
 if ($mysqli->query($strsql) === FALSE) {
-    $msg = "create database notebook failed: ".$mysqli->error;
+    $msg = "create table notebook failed: ".$mysqli->error;
    	php_die($msg);
 }
 
 $strsql = <<<EOF
-CREATE TABLE IF NOT EXISTS `note` (
+CREATE TABLE `note` (
   `path` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `create_time` datetime NOT NULL,
@@ -50,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `note` (
 EOF;
 
 if ($mysqli->query($strsql) === FALSE) {
-    $msg = "create database note failed: ".$mysqli->error;
+    $msg = "create table note failed: ".$mysqli->error;
    	php_die($msg);
 }
 
