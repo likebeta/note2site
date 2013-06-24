@@ -6,7 +6,7 @@ if ($path === '')
 	exit;
 }
 
-// 开始获取note内容
+// get content of the note
 require_once('../config.php');
 require('../oauth/ynote_client.php');
 require('../oauth/ynote_parse.php');
@@ -62,7 +62,7 @@ if ($note = parseNote($response)){
 	}
 }
 else{
-	die('网页不存在或者服务器错误');
+	die('This page no longer exists or server error');
 }
 ?>
 <!doctype html>

@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf8" />
-	<title>刷新缓存</title>
+	<title>flush notes</title>
 </head>
 <body>
 <?php
@@ -11,11 +11,11 @@ require('oauth/ynote_client.php');
 require('oauth/ynote_parse.php');
 
 if (!isset($_GET['token']) || $_GET['token'] !== $flush_token) {
-	php_die('你妹的token不正确！');
+	php_die('your sister, token error！');
 }
 
 $mysqli = new mysqli($db_host, $db_username, $db_password, $db_name);
-/* check connection */
+
 if ($mysqli->connect_errno) {
 	$msg = "Connect failed: ".$mysqli->connect_error;
 	php_die($msg);
@@ -109,7 +109,7 @@ if ($notebooks = parseNotebooks($response)){
 	echo "flush end...<br />";
 }
 else{
-	php_die('listNotebooks错误，请重试');
+	php_die('listNotebooks error，retry please');
 }
 ?>
 </body>
