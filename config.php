@@ -1,5 +1,5 @@
 <?php
-$site_url = '';
+$site_url = 'http://note2site.ixxoo.me';
 
 // note
 $base_url = 'http://note.youdao.com';
@@ -11,8 +11,8 @@ $oauth_access_secret = '598301bc3f0e4187bcb0b26482a06eb1';
 $flush_token = 'r4c0oifbhvat3dszm9nuyl6qpj5e2x7wkg81';// token of flush 
 
 // db
-$db_host = '';
-$db_name = '';
-$db_username = '';
-$db_password = '';
+$db_host = $_ENV['OPENSHIFT_MYSQL_DB_HOST'].':'.$_ENV['OPENSHIFT_MYSQL_DB_PORT'];
+$db_name = $_ENV['OPENSHIFT_APP_NAME'];
+$db_username = $_ENV['OPENSHIFT_MYSQL_DB_USERNAME'];
+$db_password = $_ENV['OPENSHIFT_MYSQL_DB_PASSWORD'];
 ?>
