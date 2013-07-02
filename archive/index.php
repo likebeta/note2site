@@ -69,7 +69,7 @@ else{
 <html>
 <head>
 <title><?php echo $note->title;?> | note2site</title>
-<meta charset="utf8" />
+<meta charset="utf-8" />
 </head>
 <body>
 <?php

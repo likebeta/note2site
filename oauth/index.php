@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>note2site</title>
-<meta charset="utf8" />
+<meta charset="utf-8" />
 </head>
 <body>
 <?php
