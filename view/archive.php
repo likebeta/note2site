@@ -12,7 +12,9 @@
     <div class="doc" id="doc">
         <div class="header" id="header">
             <div class="logo"><a href="<?php echo SITE_URL;?>" title="note2site" target="_self">note2site</a></div>
-            <div class="links"></div>
+            <div class="links">
+                <a href="https://github.com/likebeta/note2site">github</a>
+            </div>
         </div>
         <div class="content" id="content">
             <div class="mod-left-side public-page" id="mod-left-side">
@@ -82,7 +84,7 @@ EOF;
                                 <h2><?php echo $note->title;?></h2>
                              </div>
                         </div>
-                        <div class="mod-note-body publicpage-note-preview" id="note-list-wrap" style="top:50px;overflow-y:scroll">
+                        <div class="mod-note-body publicpage-note-preview" id="note-list-wrap" style="top:50px;overflow-y:auto">
                             <div class="note-info hide" id="note-info">
                                 <p class="detail-line time-line">
                                     <em class="create-time"><em class="label">创建时间：</em><?php echo $note->create_time;?></em>

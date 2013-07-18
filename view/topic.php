@@ -12,7 +12,9 @@
     <div class="doc" id="doc">
         <div class="header" id="header">
             <div class="logo"><a href="<?php echo SITE_URL;?>" title="note2site" style="color:#fff">note2site</a></div>
-            <div class="links"></div>
+            <div class="links">
+                <a href="https://github.com/likebeta/note2site">github</a>
+            </div>
         </div>
         <div class="content" id="content">
             <div class="mod-left-side public-page" id="mod-left-side">
