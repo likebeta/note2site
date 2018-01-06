@@ -132,7 +132,7 @@ if ($do == 'incomming_test') {
 */
 	// getAuthorizedDownloadLink
     echo '<br />';
-    $download_attachment_response = $client->getAuthorizedDownloadLink($oauth_access_token, $oauth_access_secret, "http://note.youdao.com/yws/open/resource/download/739/7CCE9F2C0E734CC4A7F3EC96EA8BE440");
+    $download_attachment_response = $client->getAuthorizedDownloadLink($oauth_access_token, $oauth_access_secret, "https://note.youdao.com/yws/open/resource/download/739/7CCE9F2C0E734CC4A7F3EC96EA8BE440");
     echo '<a href="'.$download_attachment_response.'">Download</a>';
  
     echo '<br /><br />';
