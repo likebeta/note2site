@@ -1,0 +1,22 @@
+
+{
+    "version": 2,
+    "builds": [
+        { "src": "*.php", "use": "@now/php" },
+        { "src": "*/*.php", "use": "now-php-extra" },
+        { "src": "static/*/*", "use": "@now/static" }
+    ],
+    "routes": [
+        { "src": "/static/(.+)", "dest": "/static/$1" },
+        { "src": "/topic/.+", "dest": "/route.php" },
+        { "src": "/archive/.+", "dest": "/route.php" },
+        { "src": "/", "dest": "/index.php" }
+    ],
+    "env": {
+        "MYSQL_HOST": "db4free.net",
+        "MYSQL_USERNAME": "note2site",
+        "MYSQL_PASSWORD": "uK3zbcNk27g2wPX",
+        "MYSQL_DBNAME": "note2site",
+        "MYSQL_PORT": "3306"
+    }
+  }

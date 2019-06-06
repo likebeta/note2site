@@ -36,14 +36,14 @@ try
 	}
 	$strsql = <<<EOF
 	CREATE TABLE `notebook` (
-	  `path` varchar(255) NOT NULL,
-	  `name` varchar(255) NOT NULL,
-	  `notes_num` varchar(255) NOT NULL,
-	  `notebook_group` varchar(255) NOT NULL,
+	  `path` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+	  `name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+	  `notes_num` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+	  `notebook_group` varchar(255) COLLATE utf8mb4_bin NOT NULL,
 	  `create_time` datetime NOT NULL,
 	  `modify_time` datetime NOT NULL,
 	  PRIMARY KEY (`path`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 EOF;
 	if ($mysqli->query($strsql) === FALSE)
 	{
@@ -51,13 +51,13 @@ EOF;
 	}
 	$strsql = <<<EOF
 	CREATE TABLE `note` (
-	  `path` varchar(255) NOT NULL,
-	  `title` varchar(255) NOT NULL,
+	  `path` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+	  `title` varchar(255) COLLATE utf8mb4_bin NOT NULL,
 	  `create_time` datetime NOT NULL,
 	  `modify_time` datetime NOT NULL,
-	  `notebook_path` varchar(255) NOT NULL,
+	  `notebook_path` varchar(255) COLLATE utf8mb4_bin NOT NULL,
 	  PRIMARY KEY (`path`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 EOF;
 	if ($mysqli->query($strsql) === FALSE)
 	{
@@ -92,7 +92,7 @@ EOF;
 		$notes = parseNotes($response);
 		if (!$notes)
 		{
-			printf("listNotes %s failed<br />", $notebook->name);
+			printf("listNotes %s failed<br />%s<br />", $notebook->name,  $response);
 			continue;		
 		}
 		
